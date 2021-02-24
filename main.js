@@ -42,6 +42,40 @@ var selectMilestone
 // 		 });
 // }
 
+var username
+
+function init(){
+
+  var _username = getCookie("userId");
+  var _token = getCookie("token");
+
+
+  if(_username != "" && _token != ""){
+
+    //情報をセット
+    TOKEN = _token
+    username = _username
+    getUserInfo()
+  }
+
+}
+
+
+function initMain(){
+
+    log("initMain")
+
+    //パネルの表示切替
+  	document.getElementById("auth-panel").className="hide"
+  	document.getElementById("main-panel").className=""
+
+    // 初期情報取得
+    getProjectList()
+    getMilestoneList()
+    setApiLink()
+}
+
+
 
 /***********************************************************
 * 情報取得処理
@@ -51,6 +85,8 @@ var selectMilestone
 * ISSUEとMRの情報を取得する
 **/
 function getInfo(){
+
+  log("getInfo")
 
     // ボタンを非活性にする
     document.getElementById("get-info-btn").disabled = true;
@@ -78,7 +114,7 @@ function getIssues(){
   var method = "GET";
   var successFunc = issuesResult;
   var url = "/groups/" + GROUP_ID + "/issues";
-  var request = "private_token=" + TOKEN + "&per_page=100&milestone=" + milestone + "&page=" + issuePage;
+  var request = "access_token=" + TOKEN + "&per_page=100&milestone=" + milestone + "&page=" + issuePage;
   sendAjaxRequest(method, url, request, successFunc)
 
 }
@@ -114,7 +150,7 @@ function getMergeRequests(){
   var method = "GET";
   var successFunc = mergeRequestsResult;
   var url = "/groups/" + GROUP_ID + "/merge_requests";
-  var request = "private_token=" + TOKEN + "&per_page=100&milestone=" + milestone + "&page=" + mergeRequestPage;
+  var request = "access_token=" + TOKEN + "&per_page=100&milestone=" + milestone + "&page=" + mergeRequestPage;
   sendAjaxRequest(method, url, request, successFunc)
 
 }
@@ -431,7 +467,7 @@ function getMilestoneList(){
     var method = "GET";
     var successFunc = writeMilestoneList;
     var url =  "/groups/" + GROUP_ID + "/milestones";
-    var request = "private_token=" + TOKEN + "&per_page=100";
+    var request = "access_token=" + TOKEN + "&per_page=100";
     sendAjaxRequest(method, url, request, successFunc)
 
 }
@@ -476,7 +512,7 @@ function getProjectList(){
   var method = "GET";
   var successFunc = writeProjectsList;
   var url =  "/groups/" + GROUP_ID + "/projects";
-  var request = "private_token=" + TOKEN + "&per_page=100";
+  var request = "access_token=" + TOKEN + "&per_page=100";
   sendAjaxRequest(method, url, request, successFunc)
 
 }
@@ -531,7 +567,7 @@ function getTemplate(){
   var failFunc = templateNotFound;
 
  	var url = "/projects/" + project_id + "/repository/files/" + encodeURIComponent(templatePath) + "/raw";
- 	var request = "private_token=" + TOKEN + "&ref=master";
+ 	var request = "access_token=" + TOKEN + "&ref=master";
 	sendAjaxRequest(method, url, request, successFunc, failFunc)
 
 }
@@ -540,6 +576,8 @@ function getTemplate(){
 * ISSUEを作成する
 */
 function createIssue(data){
+
+  log("createIssue")
 
 	console.log(data)
 
@@ -561,7 +599,7 @@ function createIssue(data){
 	var method = "POST";
 	var successFunc = writeCreateIssueResult;
  	var url = "/projects/" + project_id + "/issues";
-	var request = "private_token=" + TOKEN + "&title=" + encodeURIComponent(issue) + "&description=" + description + milestone + "&labels=" + encodeURIComponent(labels);
+	var request = "access_token=" + TOKEN + "&title=" + encodeURIComponent(issue) + "&description=" + description + milestone + "&labels=" + encodeURIComponent(labels);
 	sendAjaxRequest(method, url, request, successFunc)
 
 }
@@ -618,7 +656,7 @@ function getIssueContinue(){
   var successFunc = createIssueContinue;
   //var successFunc = sysout;
   var url = "/projects/" + project_id + "/issues/" + iid;
-  var request = "private_token=" + TOKEN
+  var request = "access_token=" + TOKEN
   sendAjaxRequest(method, url, request, successFunc)
 
 }
@@ -627,6 +665,9 @@ function getIssueContinue(){
 * 継続ISSUEを作成する
 */
 function createIssueContinue(data){
+
+  log("createIssueContinue")
+
 
   console.log(data)
 
@@ -650,7 +691,7 @@ function createIssueContinue(data){
   var method = "POST";
   var successFunc = writecreateIssueResultContinue;
   var url = "/projects/" + project_id + "/issues";
-  var request = "private_token=" + TOKEN + "&title=" + encodeURIComponent(title) + "&description=" + encodeURIComponent(description) + "&labels=" + encodeURIComponent(labels);
+  var request = "access_token=" + TOKEN + "&title=" + encodeURIComponent(title) + "&description=" + encodeURIComponent(description) + "&labels=" + encodeURIComponent(labels);
   sendAjaxRequest(method, url, request, successFunc)
 
 }
@@ -681,7 +722,7 @@ function getIssueLinks(){
     var method = "GET";
     var successFunc = createIssueLinks;
     var url = "/projects/" + continueIssueProjectId + "/issues/" + continueIssueId + "/links";
-    var request = "private_token=" + TOKEN;
+    var request = "access_token=" + TOKEN;
     sendAjaxRequest(method, url, request, successFunc)
 }
 
@@ -708,7 +749,7 @@ function createIssueLinks(data){
 
     //処理を実施
     for(var i = 0; i< ids.length ;i++){
-      var request = "private_token=" + TOKEN + "&target_project_id=" + continueIssueProjectId + "&target_issue_iid=" + ids[i] ;
+      var request = "access_token=" + TOKEN + "&target_project_id=" + continueIssueProjectId + "&target_issue_iid=" + ids[i] ;
       sendAjaxRequest(method, url, request, successFunc)
     }
 }
@@ -755,7 +796,7 @@ function getTemplateList(){
 	var successFunc = writeTemplateList;
   var failFunc = templateNotFound;
  	var url = "/projects/" + project_id + "/repository/tree/";
- 	var request = "private_token=" + TOKEN + "&path=" + encodeURIComponent(templatePath) + "&ref=master";
+ 	var request = "access_token=" + TOKEN + "&path=" + encodeURIComponent(templatePath) + "&ref=master";
 	sendAjaxRequest(method, url, request, successFunc, failFunc)
 
 
@@ -822,7 +863,7 @@ function getlabels(){
 	var successFunc = writeLabelList;
 
  	var url = "/projects/" + project_id + "/labels";
- 	var request = "private_token=" + TOKEN + "&per_page=100";
+ 	var request = "access_token=" + TOKEN + "&per_page=100";
 	sendAjaxRequest(method, url, request, successFunc)
 
 }
@@ -879,6 +920,9 @@ function csvDownload() {
     alert("マイルストーンが選択されていません\n「ISSUEを集計」の送信ボタンを押してください")
     return false;
   }
+
+  log("csvDownload")
+
 
   //ヘッダーを作成
   var content = "type" + ","

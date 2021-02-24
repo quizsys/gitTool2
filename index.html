@@ -7,13 +7,41 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.0/css/bootstrap.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
   <script src="config.js"></script>
   <script src="common.js"></script>
   <script src="main.js"></script>
   <script src="main-chart.js"></script>
+  <style>
+    .hide{
+      display: none
+    }
+  </style>
 </head>
 <body>
 
+<div id="auth-panel">
+
+  <div class="row">
+  	<div class="col-sm-2"></div>
+  	<div class="col-sm-8">
+      <h1>gitlab toolへのログイン</h1><br />
+			<input type="text" id="auth-username" required autofocus class="form-control input-sm" placeholder="ユーザ名"><br />
+			<input type="password" id="auth-password" required class="form-control input-sm" placeholder="パスワード"><br />
+			<input type="text" id="tenant-code" required class="form-control input-sm" placeholder="テナントコード"><br />
+			<button  class="btn btn-danger" onclick="auth()">ログイン</button>
+  	</div>
+  </div>
+
+</div>
+
+<div id="main-panel" class="hide">
+
+  <nav class="navbar navbar-dark bg-dark" style="color:white">
+      <img id="user-avatar" src="" width="30" height="30" class="d-inline-block align-top" alt="" style="background-color: white;" />
+      <div id="username"></div>
+      <button class="btn btn-secondary" onclick="logout()">ログアウト</button>
+  </nav>
 
   <h1>ISSUEを集計</h1>
   <select id="milestone"></select>
@@ -124,7 +152,7 @@
   <ul>
     <li><a id="plan" href="" target="_blank">ISSUE作成スケジューラーを表示</a></li>
   </ul>
-  
+
   <br>
   <br>
   <hr>
@@ -142,13 +170,13 @@
     <li><a href="diagram/" target="_blank">累積フローダイアグラムを表示</a></li>
   </ul>
 
+</div>
+
 </body>
 
 <script>
   window.onload = function() {
-    getProjectList()
-    getMilestoneList()
-    setApiLink()
+    init()
   }
 </script>
 

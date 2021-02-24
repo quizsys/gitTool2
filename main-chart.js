@@ -17,6 +17,8 @@ function getInfoBurnDownChart(){
       burnDownChart.destroy()
     }
 
+		log("getInfoBurnDownChart")
+
 		//取得処理
 		getBurnDownInfo()
 }
